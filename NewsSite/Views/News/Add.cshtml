@@ -1,0 +1,89 @@
+﻿@model NewsSite.ViewModel.NewsAddEditViewModel
+@{
+    SelectList cat = (SelectList)@ViewBag.Categories;
+}
+
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Add</title>
+</head>
+<body>
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <h1 class="text-danger h1">
+            @TempData["ErrorMessage"]
+        </h1>
+    }
+    <div class="row">
+        <div class="col-md-4">
+            <form asp-action="Add" asp-controller="News" method="post" enctype="multipart/form-data">
+
+
+                <div class="form-group">
+                    <label asp-for="NewsTitle" class="control-label"></label>
+                    <input asp-for="NewsTitle" class="form-control" />
+                    <span asp-validation-for="NewsTitle" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="SmallDescription" class="control-label"></label>
+                    <input asp-for="SmallDescription" class="form-control" />
+                    <span asp-validation-for="SmallDescription" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Slug" class="control-label"></label>
+                    <input asp-for="Slug" class="form-control" />
+                    <span asp-validation-for="Slug" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="NewsText" class="control-label"></label>
+                    <input asp-for="NewsText" class="form-control" />
+                    <span asp-validation-for="NewsText" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="SortOrder" class="control-label"></label>
+                    <input asp-for="SortOrder" class="form-control" />
+                    <span asp-validation-for="SortOrder" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="VisitCount" class="control-label"></label>
+                    <input asp-for="VisitCount" class="form-control" />
+                    <span asp-validation-for="VisitCount" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="VoteSumation" class="control-label"></label>
+                    <input asp-for="VoteSumation" class="form-control" />
+                    <span asp-validation-for="VoteSumation" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="VoteCount" class="control-label"></label>
+                    <input asp-for="VoteCount" class="form-control" />
+                    <span asp-validation-for="VoteCount" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <span>Picture</span>
+                    <input type="file" name="Picture" id="Picture" value="" />
+                </div>
+                <div class="form-group">
+                    <label asp-for="NewsCategoryID" class="control-label"></label>
+                    <select asp-for="NewsCategoryID" asp-items="@cat" class="form-control">
+                    </select>
+                    <span asp-validation-for="NewsCategoryID" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Create" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div>
+        <a asp-action="Index">Back to List</a>
+    </div>
+
+</body>
+</html>

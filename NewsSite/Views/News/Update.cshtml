@@ -1,0 +1,65 @@
+﻿@using NewsSite.ViewModel
+@model NewsAddEditViewModel
+
+@{
+    ViewData["Title"] = "Update News";
+}
+
+<h2>Update News</h2>
+
+<form asp-action="Update" asp-controller="News" method="post" enctype="multipart/form-data">
+    <input type="hidden" asp-for="NewsID" name="NewsID" />
+
+    <div class="form-group">
+        <label asp-for="NewsTitle"></label>
+        <input asp-for="NewsTitle" class="form-control" />
+        <span asp-validation-for="NewsTitle" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Slug"></label>
+        <input asp-for="Slug" class="form-control" />
+        <span asp-validation-for="Slug" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="NewsCategoryID"></label>
+        <select asp-for="NewsCategoryID" asp-items="ViewBag.Categories" class="form-control"></select>
+        <span asp-validation-for="NewsCategoryID" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="SortOrder"></label>
+        <input asp-for="SortOrder" class="form-control" />
+        <span asp-validation-for="SortOrder" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="NewsText"></label>
+        <textarea asp-for="NewsText" class="form-control"></textarea>
+        <span asp-validation-for="NewsText" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="SmallDescription"></label>
+        <textarea asp-for="SmallDescription" class="form-control"></textarea>
+        <span asp-validation-for="SmallDescription" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Picture">Upload New Image</label>
+        <input type="file" asp-for="Picture" class="form-control" />
+      @*   <span asp-validation-for="Picture" class="text-danger"></span> *@
+    </div>
+ 
+    @if (!string.IsNullOrEmpty(Model.ImageUrl))
+    {
+        <div class="form-group">
+            <label>Current Image</label>
+            <br />
+            <img src="@Url.Content(Model.ImageUrl)" alt="Current Image" style="max-width: 200px;" />
+        </div>
+    }
+
+    <input type="submit" class="btn btn-success" value="Save Changes" />
+</form>

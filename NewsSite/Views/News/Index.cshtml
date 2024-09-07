@@ -1,0 +1,62 @@
+﻿@using DomainModel.ViewModels.News
+@model NewsSearchModel;
+@{
+    SelectList Categories = (SelectList)ViewBag.Categories;
+}
+<script>
+    $(document).on("change", "#NewsCategoryID", function () {
+        doSearch();
+    });
+    $(document).on("keyup", "#NewsTitle", function () {
+        doSearch();
+    });
+    $(document).on("keyup", "#NewsText", function () {
+        doSearch();
+    });
+    $(document).on("keyup", "#Slug", function () {
+        doSearch();
+    });
+    function doSearch() {
+        var url = `@Url.Action("NewListAction", "News")`;
+        $.get(url, $("#frmSearchNews").serialize(), function (newsList) {
+            $("#dvList").html(newsList);
+        })
+    }
+</script>
+<form asp-action="index" asp-controller="News" method="get" id="frmSearchNews">
+    <table class="table table-bordered table-hover table-striped">
+        <tr>
+            <td>Catregory</td>
+            <td>
+                <select asp-items="@Categories" asp-for="NewsCategoryID" class="form-control"></select>
+            </td>
+        </tr>
+        <tr>
+            <td>NewsTitle</td>
+            <td>
+                <input asp-for="NewsTitle" class="form-control" />
+            </td>
+        </tr>
+        <tr>
+            <td>NewsText</td>
+            <td>
+                <input asp-for="NewsText" class="form-control">
+            </td>
+        </tr>
+        <tr>
+            <td>Slug</td>
+            <td>
+                <input asp-for="Slug" class="form-control">
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" class="text-center">
+                <input type="submit" value="Search" class="btn btn-primary" />
+            </td>
+        </tr>
+    </table>
+
+</form>
+<div id="dvList">
+    @await Component.InvokeAsync("NewsList", this.Model)
+</div>

@@ -1,0 +1,55 @@
+﻿@{
+    Layout = null;
+}
+@model IEnumerable<DomainModel.ViewModels.NewsCategoryListItem>
+
+<table class="table table-bordered table-hover table-striped">
+    <thead>
+        <tr>
+            <th>
+                کد رده
+            </th>
+            <th>
+                نام رده
+            </th>
+            <th>
+                اسلاگ
+            </th>
+            <th>
+                تعداد خبر
+            </th>
+            <th>حذف</th>
+            <th>ویرایش</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr id="tr_@item.NewsCategoryID">
+                <td>
+                    @Html.DisplayFor(modelItem => item.NewsCategoryID)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CategoryName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Slug)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NewsCount)
+                </td>
+                <td>
+                    <span class="btn btn-danger btn-sm btn-delete" data-controller="NewsCategory" data-action="Delete" data-id="@item.NewsCategoryID">
+                        Delete
+                    </span>
+
+                </td>
+                <td>
+                    <span class="btn btn-primary btn-sm btn-update" data-controller="NewsCategory" data-action="Update" data-id="@item.NewsCategoryID">
+                        Update
+                    </span>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
