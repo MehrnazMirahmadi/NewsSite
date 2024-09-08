@@ -64,6 +64,7 @@ namespace NewsSite.Controllers
         {
             if (!ModelState.IsValid)
             {
+                await LogInvalidModelStateToXml(ModelState);
                 await InflateCategories();
                 return View(model);
             }
