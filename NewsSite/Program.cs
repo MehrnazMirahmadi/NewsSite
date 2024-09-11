@@ -2,6 +2,8 @@ using DataAccess.Repositories;
 using DataAccess.Services;
 using DomainModel.Models;
 using Microsoft.EntityFrameworkCore;
+using NewsSite.FrameworkUI;
+using NewsSite.FrameworkUI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +17,7 @@ builder.Services.AddDbContext<NewsDBContext>(options => options.UseSqlServer(
 #region IoC
 builder.Services.AddScoped<INewsRepository, NewsRepository>();
 builder.Services.AddScoped<INewsCategoryRepository, NewsCategoryRepository>();
+builder.Services.AddScoped<IFileManager,FileManager>();
 #endregion
 var app = builder.Build();
 
