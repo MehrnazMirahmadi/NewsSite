@@ -78,9 +78,6 @@ $(document).on("click", ".btn-update", function () {
         $.validator.unobtrusive.parse($("#frmUpdateNewsCategory"));
     });
 
-
-
-
 });
 $(document).on("click", ".saveUpdate", function () {
 
@@ -106,16 +103,9 @@ $(document).on("click", ".saveUpdate", function () {
 
     });
 
-
-
-
 });
 
 //saveUpdate
-
-
-
-
 $(document).on("click", ".saveAdd", function () {
 
     let action = $(this).attr("data-action");
@@ -139,10 +129,6 @@ $(document).on("click", ".saveAdd", function () {
         }
 
     });
-
-
-
-
 });
 
 //btnAdd
@@ -166,3 +152,40 @@ $(document).on("click", ".btn-add", function () {
         console.error("Error fetching form");
     });
 });
+
+
+function DeleteImage(NewsID) {
+    $.ajax({
+        url: deleteImageUrl,
+        type: 'POST',
+        data: { NewsID: NewsID },
+        cache: false, 
+        success: function (op) {
+            if (op.success) {
+                alert("Success");
+                RefreshNewsList(); 
+            } else {
+                alert("Error");
+                //RefreshNewsList(); 
+            }
+        },
+        error: function () {
+            alert("Error occurred while deleting the image.");
+        }
+    });
+}
+
+function RefreshNewsList() {
+    $.ajax({
+        url: refreshNewsListUrl + "?" + new Date().getTime(),
+        type: 'GET',
+        cache: false,
+        success: function (receivingData) {
+            $("#dvList").html(receivingData); 
+        },
+        error: function () {
+            alert("Error occurred while refreshing the list.");
+        }
+    });
+}
+

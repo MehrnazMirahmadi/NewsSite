@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System.Xml.Linq;
 using System.Xml;
 using NewsSite.FrameworkUI.Services;
+using DomainModel.Comon;
 
 namespace NewsSite.Controllers
 {
@@ -49,6 +50,7 @@ namespace NewsSite.Controllers
             await Task.CompletedTask;
         }
         #endregion
+
         #region Cto
         private readonly INewsRepository newsRepo;
         private readonly INewsCategoryRepository catRepo;
@@ -62,6 +64,7 @@ namespace NewsSite.Controllers
             this.fileManager = fileManager;
         }
         #endregion
+
         #region InflateCategories
         public async Task InflateCategories()
         {
@@ -72,10 +75,12 @@ namespace NewsSite.Controllers
             ,
                 NewsCategoryID = -1
             });
-            ViewBag.Categories = new SelectList(cats, "NewsCategoryID", "CategoryName");
+            var Categories = new SelectList(cats, "NewsCategoryID", "CategoryName");
+            ViewBag.Categories = Categories;
 
         }
         #endregion
+
         #region Index
         public async Task<IActionResult> Index(NewsSearchModel sm)
         {
@@ -87,6 +92,7 @@ namespace NewsSite.Controllers
             return ViewComponent("NewsList", sm);
         }
         #endregion
+
         #region Add
         public async Task<IActionResult> Add()
         {
@@ -168,6 +174,7 @@ namespace NewsSite.Controllers
             return RedirectToAction("index");
         }
         #endregion
+
         #region DeleteNews
         [HttpPost]
         public async Task<IActionResult> Delete(int NewsID)
@@ -180,11 +187,12 @@ namespace NewsSite.Controllers
             }
             if (!string.IsNullOrEmpty(news.ImageUrl))
             {
-                var imagePath = fileManager.ToPhysicalAddress(news.ImageUrl.Substring(1).Replace("/", "\\"), "");
+                var imagePath = fileManager.ToPhysicalAddress(news.ImageUrl, "NewsImage");//.Substring(1, news.ImageUrl.Length - 1).Replace(@"/", @"\"), ""
                 bool isFileRemoved = fileManager.RemoveFile(imagePath);
                 if (!isFileRemoved)
                 {
                     TempData["ErrorMessage"] = "Failed to delete the image file.";
+                    await InflateCategories();
                 }
             }
             var op = await newsRepo.Delete(NewsID);
@@ -198,40 +206,33 @@ namespace NewsSite.Controllers
         }
         #endregion
 
-
-
+        #region Update 
+     
         [Route("News/Update/{NewsID}")]
         public async Task<IActionResult> Update(int NewsID)
         {
-         await InflateCategories();
-            var news = await newsRepo.Get(NewsID);
-
-            if (news == null)
+            var n = await newsRepo.Get(NewsID);
+            var news = new ViewModel.NewsDetailsModel
             {
-                return NotFound();
-            }
+                NewsID = NewsID,
+                NewsCategoryID = n.NewsCategoryID,
+                NewsTitle = n.NewsTitle,
+                NewsText = n.NewsText,
+                ImageUrl = n.ImageUrl,
+                RegistrationDate = n.RegistrationDate,
+                Slug = n.Slug,
+                SmallDescription = n.SmallDescription,
+                SortOrder = n.SortOrder,
+                VisitCount = n.VisitCount,
+                VoteCount = n.VoteCount,
+                VoteSumation = n.VoteSumation
 
-            var model = new NewsAddEditViewModel
-            {
-                NewsID = news.NewsID,
-                NewsTitle = news.NewsTitle,
-                Slug = news.Slug,
-                NewsCategoryID = news.NewsCategoryID,
-                SortOrder = news.SortOrder,
-                NewsText = news.NewsText,
-                SmallDescription = news.SmallDescription,
-                VisitCount = news.VisitCount,
-                VoteCount = news.VoteCount,
-                VoteSumation = news.VoteSumation,
-                ImageUrl = news.ImageUrl
             };
-
-            return View(model);
+            await InflateCategories();
+            return View(news);
         }
-
         [HttpPost]
         [Route("News/Update/{NewsID}")]
- 
         public async Task<IActionResult> Update(NewsAddEditViewModel model)
         {
             if (!ModelState.IsValid)
@@ -246,6 +247,8 @@ namespace NewsSite.Controllers
             {
                 return NotFound();
             }
+
+            // Update news fields
             news.NewsTitle = model.NewsTitle;
             news.Slug = model.Slug;
             news.NewsCategoryID = model.NewsCategoryID;
@@ -255,57 +258,49 @@ namespace NewsSite.Controllers
             news.VisitCount = model.VisitCount;
             news.VoteCount = model.VoteCount;
             news.VoteSumation = model.VoteSumation;
-
             if (model.Picture != null)
             {
-                if (!model.Picture.FileName.CheckFileName())
+                string fileName = Path.GetFileName(model.Picture.FileName);
+
+                var fileValidationResult = fileManager.ValidateFileSize(model.Picture, 2048, 2097152);
+                if (!fileValidationResult.Success)
+                {
+                    TempData["ErrorMessage"] = fileValidationResult.Message;
+                    await InflateCategories();
+                    return View(model);
+                }
+
+                if (!fileManager.ValidateFileName(fileName))
                 {
                     TempData["ErrorMessage"] = "Invalid file name.";
                     await InflateCategories();
                     return View(model);
                 }
-                if (model.Picture.Length < 2048 || model.Picture.Length > 2097152)
+                if (!model.Picture.IsValidImageHeader())
                 {
-                    TempData["ErrorMessage"] = "Invalid file size.";
+                    TempData["ErrorMessage"] = "Invalid image format.";
+                    await InflateCategories();
+                    return View(model);
+                }
+                if (!string.IsNullOrEmpty(news.ImageUrl))
+                {
+                    var oldImagePath = Path.Combine(env.ContentRootPath, "wwwroot", news.ImageUrl.TrimStart('/'));
+                    fileManager.RemoveFile(oldImagePath);
+                }
+                var saveResult = fileManager.SaveFile(model.Picture, "NewsImage");
+                if (!saveResult.Success)
+                {
+                    TempData["ErrorMessage"] = "Failed to save image. " + saveResult.Message;
                     await InflateCategories();
                     return View(model);
                 }
 
-                if (!string.IsNullOrEmpty(news.ImageUrl))
-                {
-                    var oldImagePath = Path.Combine(env.ContentRootPath, "wwwroot", news.ImageUrl.TrimStart('/'));
-                    if (System.IO.File.Exists(oldImagePath))
-                    {
-                        System.IO.File.Delete(oldImagePath);
-                    }
-                }
-                if (!model.Picture.IsValidImageHeader())
-                {
-                    TempData["ErrorMessage"] = "Invalid image format.";
-                    return View(model);
-                }
-
-                var physicalFileName = Path.GetFileName(model.Picture.FileName).ToUniqueFileName();
-                var relativePath = @"~/NewsImage/" + physicalFileName;
-                var physicalPath = env.ContentRootPath + @"\wwwroot\NewsImage\" + physicalFileName;
-             
-
-                using (var fs = new FileStream(physicalPath, FileMode.Create))
-                {
-                    await model.Picture.CopyToAsync(fs);
-                }
-
-                news.ImageUrl = relativePath;
+                news.ImageUrl = fileManager.ToRelativeAddress(saveResult.Message, "NewsImage");
             }
-            else
+            var updateResult = await newsRepo.Update(news);
+            if (!updateResult.Success)
             {
-                news.ImageUrl = news.ImageUrl;
-            }
-
-            var op = await newsRepo.Update(news);
-            if (!op.Success)
-            {
-                TempData["ErrorMessage"] = op.Message;
+                TempData["ErrorMessage"] = updateResult.Message;
                 await InflateCategories();
                 return View(model);
             }
@@ -313,7 +308,39 @@ namespace NewsSite.Controllers
             return RedirectToAction("Index");
         }
 
+        #endregion
 
+        #region DeleteImage
+        [HttpPost]
+        public async Task<IActionResult> DeleteImage(int NewsID)
+        {
+            var news = await newsRepo.Get(NewsID);
+            if (news == null)
+            {
+                return Json(new OperationResult().ToFailed("News item not found."));
+            }
+            if (!string.IsNullOrEmpty(news.ImageUrl) && news.ImageUrl.ToLower() != "~/pics/noimage.svg")
+            {
+                var imagePath = fileManager.ToPhysicalAddress(news.ImageUrl.Substring(1).Replace("/", "\\"), "");
+                bool isFileRemoved = fileManager.RemoveFile(imagePath);
+                if (!isFileRemoved)
+                {
+                    return Json(new OperationResult().ToFailed("Failed to delete the image file."));
+                }
+            }
+            OperationResult op = new OperationResult();
+            try
+            {
+                await newsRepo.RemoveImage(NewsID);
+                return Json(op.ToSuccess("Image removed successfully."));
+            }
+            catch (Exception)
+            {
+                return Json(op.ToFailed("Image could not be removed."));
+            }
+        }
+
+        #endregion
 
     }
 

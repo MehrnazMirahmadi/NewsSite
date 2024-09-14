@@ -89,39 +89,27 @@ namespace DataAccess.Repositories
             return await db.News.AnyAsync(x => x.NewsTitle == title);
 
         }
-
-        public async Task<NewsAddEditModel> Get(int NewsID)
+        
+        public async Task<NewsAddEditModel> Get(int ID)
         {
-            var n = await db.News.FirstOrDefaultAsync(x => x.NewsID == NewsID);
-            return new NewsAddEditModel
-            {
+             var n = await db.News.FirstOrDefaultAsync(x => x.NewsID == ID);
+            return new NewsAddEditModel 
+            { 
                 ImageUrl = n.ImageUrl
-                ,
-                NewsCategoryID = n.NewsCategoryID
-                ,
-                NewsID = n.NewsID
-                ,
-                NewsTitle = n.NewsTitle
-                ,
-                NewsText = n.NewsText
-                ,
-                RegistrationDate = n.RegistrationDate
-                ,
-                Slug = n.Slug
-                ,
-                SmallDescription = n.SmallDescription
-                ,
-                SortOrder = n.SortOrder
-                ,
-                VisitCount = n.VisitCount
-                ,
-                VoteCount = n.VoteCount
-                ,
-                VoteSumation = n.VoteSumation
-
+                ,NewsCategoryID = n.NewsCategoryID
+                ,NewsID = n.NewsID
+                ,NewsTitle = n.NewsTitle
+                ,NewsText = n.NewsText
+                ,RegistrationDate = n.RegistrationDate
+                ,Slug = n.Slug
+                ,SmallDescription = n.SmallDescription
+                ,SortOrder = n.SortOrder
+                ,VisitCount = n.VisitCount
+                ,VoteCount = n.VoteCount
+                ,VoteSumation = n.VoteSumation
+                
             };
         }
-
         public async Task<List<NewsListItem>> GetAll()
         {
             return await db.News.Select(news => new NewsListItem
@@ -204,22 +192,28 @@ namespace DataAccess.Repositories
             result.NewsList = await q.OrderByDescending(x => x.SortOrder)
                 .Skip(sm.PageIndex * sm.PageSize)
                 .Take(sm.PageSize)
-                .Select(news => new NewsListItem
+               .Select(news => new NewsListItem
                 {
                     CategoryName = news.NewsCategory.CategoryName
-                    ,
-                    ImageUrl = news.ImageUrl
-                    ,
-                    NewsTitle = news.NewsTitle
-                    ,
-                    NewsID = news.NewsID
-                    ,
-                    Slug = news.Slug
-                    ,
-                    SortOrder = news.SortOrder
+                    ,ImageUrl = news.ImageUrl
+                    ,NewsTitle = news.NewsTitle
+                    ,NewsID = news.NewsID
+                    ,Slug = news.Slug
+                    ,SortOrder = news.SortOrder
                 })
                 .ToListAsync();
+                
             return result;
+        }
+
+        public async Task RemoveImage(int NewsID)
+        {
+            var n = await db.News.FirstOrDefaultAsync(x => x.NewsID == NewsID);
+            if (n != null && n.ImageUrl != string.Empty && n.ImageUrl.ToLower() != "~/pics/noimage.svg")
+            {
+                n.ImageUrl = "~/pics/noimage.svg";
+                await db.SaveChangesAsync();
+            }
         }
     }
 }

@@ -6,18 +6,17 @@ namespace NewsSite.ViewComponents
 {
 
     [ViewComponent(Name = "NewsList")]
-    public class NewsListViewComponent : ViewComponent
+    public class NewstViewComponent : ViewComponent
     {
         private readonly INewsRepository repo;
-        public NewsListViewComponent(INewsRepository repo)
+        public NewstViewComponent(INewsRepository repo)
         {
             this.repo = repo;
         }
         public async Task<IViewComponentResult> InvokeAsync(NewsSearchModel sm)
         {
-            var r = await repo.Search(sm);
-
-            return View(r.NewsList);
+            var news = await repo.Search(sm);
+            return View(news);
         }
     }
 }

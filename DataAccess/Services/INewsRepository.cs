@@ -15,5 +15,6 @@ namespace DataAccess.Services
         Task<ListComplexModel> Search(NewsSearchModel sm);
         Task<bool> ExistNewsTitle(string title);
         Task<bool> ExistNewsSlug(string slug);
+        Task RemoveImage(int NewsID);
     }
 }
