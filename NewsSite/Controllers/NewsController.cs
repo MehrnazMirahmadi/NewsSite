@@ -187,7 +187,8 @@ namespace NewsSite.Controllers
             }
             if (!string.IsNullOrEmpty(news.ImageUrl))
             {
-                var imagePath = fileManager.ToPhysicalAddress(news.ImageUrl, "NewsImage");//.Substring(1, news.ImageUrl.Length - 1).Replace(@"/", @"\"), ""
+                /* var imagePath = fileManager.ToPhysicalAddress(news.ImageUrl, "NewsImage");*///.Substring(1, news.ImageUrl.Length - 1).Replace(@"/", @"\"), ""
+                var imagePath = fileManager.ToPhysicalAddress(news.ImageUrl.Substring(1).Replace("/", "\\"), "");
                 bool isFileRemoved = fileManager.RemoveFile(imagePath);
                 if (!isFileRemoved)
                 {
