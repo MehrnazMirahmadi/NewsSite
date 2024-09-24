@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DomainModel.Models
 {
-    public class NewsDBContext:DbContext
+    public class NewsDBContext : DbContext
     {
         public NewsDBContext(DbContextOptions<NewsDBContext> options) : base(options)
         {
@@ -11,6 +11,7 @@ namespace DomainModel.Models
         }
         public DbSet<NewsCategory> NewsCategories { get; set; }
         public DbSet<News> News { get; set; }
+        public DbSet<Advertisement> Advertisement { get; set;}
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new NewsCategoryConfigurations());

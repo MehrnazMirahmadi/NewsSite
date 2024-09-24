@@ -18,6 +18,8 @@ builder.Services.AddDbContext<NewsDBContext>(options => options.UseSqlServer(
 builder.Services.AddScoped<INewsRepository, NewsRepository>();
 builder.Services.AddScoped<INewsCategoryRepository, NewsCategoryRepository>();
 builder.Services.AddScoped<IFileManager,FileManager>();
+builder.Services.AddScoped<IAdvertiseVisitoryRepository, AdvertiseVisitoryRepository>();
+builder.Services.AddScoped<IMenuVisitoryRepository, MenuVisitoryRepository>();
 #endregion
 var app = builder.Build();
 

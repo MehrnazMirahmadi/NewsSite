@@ -1,0 +1,48 @@
+﻿@model List<DomainModel.Models.NewsCategory>
+<nav class="navbar navbar-expand-lg bg-nav-color sticky-top header  mt-2 ">
+    <div class="container">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#main_nav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon">
+                <i class="fa fa-bars"></i>
+            </span>
+        </button>
+        <div class="collapse navbar-collapse" id="main_nav">
+            <ul class="navbar-nav pr-lg-0">
+                <li class="nav-item dropdown ">
+                    <a class="nav-link nav-text-color pb-3" href="#">صفحات</a>
+                    <ul class="dropdown-menu fade-up">
+                        <li><a class="dropdown-item" href="index.html"> صفحه اصلی</a></li>
+                        <li><a class="dropdown-item" href="category.html">دسته بندی ها </a></li>
+                        <li><a class="dropdown-item" href="show-news.html"> نمایش خبر  </a></li>
+                        <li><a class="dropdown-item" href="contact.html"> ارتباط با ما  </a></li>
+                        <li><a class="dropdown-item" href="about-us.html"> درباره ی ما  </a></li>
+                    </ul>
+                </li>
+
+                @foreach (var catl1 in this.Model)
+                {
+                    <li class="nav-item dropdown ">
+                        <a class="nav-link  nav-text-color pb-3" href="@Url.Action("News","Home",new{ID=catl1.Slug})">@catl1.CategoryName</a>
+                        <ul class="dropdown-menu fade-up">
+                            @foreach (var catl2 in catl1.Children)
+                            {
+                                <li><a class="dropdown-item" href="@Url.Action("News","Home",new{ID=catl2.Slug})">@catl2.CategoryName</a></li>
+                            }
+
+                        </ul>
+                    </li>
+                }
+                <li class="nav-item dropdown ">
+                    <a class="nav-link  nav-text-color pb-3" href="category.html">بین الملل</a>
+                    <ul class="dropdown-menu fade-up">
+                        <li><a class="dropdown-item" href="#">ایران</a></li>
+                        <li><a class="dropdown-item" href="#"> کافه بین الملل </a></li>
+                        <li><a class="dropdown-item" href="#"> عناوین کل اخبار بین الملل </a></li>
+                    </ul>
+                </li>
+
+
+            </ul>
+        </div>  
+    </div>  
+</nav>
