@@ -2,6 +2,7 @@
 using DomainModel.Comon;
 using DomainModel.Models;
 using DomainModel.ViewModels.News;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
 
@@ -215,5 +216,39 @@ namespace DataAccess.Repositories
                 await db.SaveChangesAsync();
             }
         }
+
+        public async Task<List<NewsListItem>> GetSpecialNewsAsync()
+        {
+            return await db.News
+                .Where(news => news.IsSpecial) 
+                .Select(news => new NewsListItem
+                {
+                    CategoryName = news.NewsCategory.CategoryName,
+                    NewsTitle = news.NewsTitle,
+                    NewsID = news.NewsID,
+                    Slug = news.Slug,
+                    ImageUrl = news.ImageUrl,
+                })
+                .ToListAsync(); // Special Is True
+        }
+
+        public async Task<List<NewsListItem>> GetTwoLatestSpecialNews()
+        {
+            return await db.News
+                .Where(news => news.IsSpecial)
+                .OrderByDescending(news => news.NewsID) 
+                .Select(news => new NewsListItem
+                {
+                    CategoryName = news.NewsCategory.CategoryName,
+                    NewsTitle = news.NewsTitle,
+                    NewsID = news.NewsID,
+                    Slug = news.Slug,
+                    ImageUrl = news.ImageUrl,
+                })
+                .Take(2) // Limit to 2 results
+                .ToListAsync();
+        }
+
+      
     }
 }

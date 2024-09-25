@@ -8,15 +8,37 @@
     <link rel="stylesheet" href="~/Visitory/css/owl.carousel.css">
     <link href="~/Visitory/css/style001.css" type="text/css" rel="stylesheet">
     <link href="~/Visitory/css/hircana.css" type="text/css" rel="stylesheet">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <!-- jQuery and Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
     <meta name="viewport" content="width=device-width" />
     <title>View</title>
 
 </head>
 <body>
+   
     @await Component.InvokeAsync("VisitoryHeader")
     @await Component.InvokeAsync("VisitoryMenu")
-   @*   @await Component.InvokeAsync("VisitoryMenu") *@
+    <div class="container">
+    <div class="row pb-5">
+        <div class="col-md-6 col-12 mt-3">
+            @await Component.InvokeAsync("SpecialNews")
+        </div>
+        <div class="col-md-6 col-12">
+            <div class="row">
+                <div class="col-12">
+                        @await Component.InvokeAsync("LatestSpecialNews")
+                </div>
+                
+            </div>
+        </div>
+    </div>
+    </div>
+
     @RenderBody()
     <script src="~/Visitory/js/jquery.2.1.0.min.js" type="text/javascript"></script>
     <script src="~/Visitory/js/popper.min.js" type="text/javascript"></script>

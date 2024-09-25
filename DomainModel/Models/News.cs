@@ -22,5 +22,6 @@ namespace DomainModel.Models
         public int VoteCount { get; set; }
         public int NewsCategoryID { get; set; }
         public NewsCategory NewsCategory { get; set; }
+        public bool IsSpecial {  get; set; }    
     }
 }

@@ -15,6 +15,7 @@ namespace DomainModel.ViewModels.News
         public string ImageUrl { get; set; }
         public int SortOrder { get; set; }
         public string CategoryName { get; set; }
+       // public bool IsSpecial { get; set; }
 
     }
 }

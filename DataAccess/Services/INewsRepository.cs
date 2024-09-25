@@ -1,4 +1,5 @@
 ﻿using DomainModel.Comon;
+using DomainModel.Models;
 using DomainModel.ViewModels.News;
 
 
@@ -16,5 +17,8 @@ namespace DataAccess.Services
         Task<bool> ExistNewsTitle(string title);
         Task<bool> ExistNewsSlug(string slug);
         Task RemoveImage(int NewsID);
+        Task<List<NewsListItem>> GetSpecialNewsAsync();
+        Task<List<NewsListItem>> GetTwoLatestSpecialNews();
+
     }
 }
