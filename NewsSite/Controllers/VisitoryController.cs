@@ -58,8 +58,7 @@ namespace NewsSite.Controllers
             // Validate the uploaded file
             if (advertisement.Picture == null || advertisement.Picture.Length == 0)
             {
-                TempData["ErrorMessage"] = "Please upload a valid image.";
-                return View(advertisement);
+                return Json(new { success = false, message = "Please upload a valid image." });
             }
 
             string fileName = Path.GetFileName(advertisement.Picture.FileName);
@@ -67,20 +66,18 @@ namespace NewsSite.Controllers
 
             if (!_fileManager.ValidateFileName(fileName))
             {
-                TempData["ErrorMessage"] = "Invalid File Name";
-                return View(advertisement);
+                return Json(new { success = false, message = "Invalid File Name" });
             }
 
             if (!fileValidationResult.Success)
             {
-                TempData["ErrorMessage"] = fileValidationResult.Message;
-                return View(advertisement);
+                return Json(new { success = false, message = fileValidationResult.Message });
             }
 
             #region ImageAddress
             string uniqueFileName = _fileManager.ToUniquieFileName(fileName);
-            string relativeAddress = _fileManager.ToRelativeAddress(uniqueFileName, "Visitory");
-            string physicalAddress = _fileManager.ToPhysicalAddress(uniqueFileName, "Visitory");
+            string relativeAddress = _fileManager.ToRelativeAddress(uniqueFileName, "Visitory/img");
+            string physicalAddress = _fileManager.ToPhysicalAddress(uniqueFileName, "Visitory/img");
 
             try
             {
@@ -91,8 +88,7 @@ namespace NewsSite.Controllers
             }
             catch (Exception ex)
             {
-                TempData["ErrorMessage"] = "Error while saving the image: " + ex.Message;
-                return View(advertisement);
+                return Json(new { success = false, message = "Error while saving the image: " + ex.Message });
             }
             #endregion
 
@@ -108,12 +104,13 @@ namespace NewsSite.Controllers
             var op = await _advertiseVisitoryRepository.Add(newAd);
             if (!op.Success)
             {
-                TempData["ErrorMessage"] = op.Message;
-                return View(advertisement);
+                return Json(new { success = false, message = op.Message });
             }
 
-            return Json(op);
+            // Return success response with message and redirect flag
+            return Json(new { success = true, message = "Advertisement added successfully!", redirect = true });
         }
+
         #endregion
     }
 }

@@ -55,7 +55,6 @@
             let form = $(formId)[0]; // Get the raw form element
 
             let formData = new FormData(form); // Use FormData for file upload
-
             let sendingUrl = `/${controller}/${action}`;
 
             $.ajax({
@@ -65,11 +64,15 @@
                 contentType: false, // Prevent jQuery from setting contentType
                 processData: false, // Prevent jQuery from processing the data
                 success: function (op) {
-                    if (op.success.toString() == "true") {
-                        $("#mainModal").modal("hide");
-                        BindGrid();
+                    if (op.success.toString() === "true") {
+                        
                         SuccessMessage(op.message);
+                       
+                        setTimeout(function () {
+                            window.location.href = '/Visitory/Index';
+                        }, 1000);
                     } else {
+                        
                         ErrorMessage(op.message);
                     }
                 },
@@ -78,6 +81,6 @@
                 }
             });
         });
-
     </script>
+
 }
