@@ -111,7 +111,7 @@ $(document).on("click", ".saveAdd", function () {
     let action = $(this).attr("data-action");
     let controller = $(this).attr("data-controller");
     let formid = "#" + $(this).attr("data-form-id");
-
+ 
     let sendingUrl = `/${controller}/${action}`;
     let sendingData = $(formid).serialize();
     $.post(sendingUrl, sendingData, function (op) {
@@ -119,7 +119,6 @@ $(document).on("click", ".saveAdd", function () {
 
             $("#mainModal").modal("hide");
             BindGrid();
-
 
             SuccessMessage(op.message);
         }
@@ -141,7 +140,6 @@ $(document).on("click", ".btn-add", function () {
 
     let sendingUrl = `/${controller}/${action}`;
     console.log("Sending URL: " + sendingUrl);
-
     $.get(sendingUrl, null, function (frmAdd) {
         console.log("Form content received");
         $("#dvModalContent").html(frmAdd);

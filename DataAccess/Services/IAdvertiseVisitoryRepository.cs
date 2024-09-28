@@ -1,4 +1,6 @@
-﻿using DomainModel.Models;
+﻿using DomainModel.Comon;
+using DomainModel.Models;
+using DomainModel.ViewModels.Advertisment;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,5 +12,8 @@ namespace DataAccess.Services
     public interface IAdvertiseVisitoryRepository
     {
         Task<Advertisement> GetActiveAdvertise();
+        Task<List<Advertisement>> GetAll();
+        Task<OperationResult> Add(AdvertismentAddEditViewModel advertisement);
+
     }
 }

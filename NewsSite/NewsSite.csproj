@@ -27,7 +27,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\Visitory\" />
     <Folder Include="wwwroot\Pics\" />
     <Folder Include="wwwroot\NewsImage\" />
   </ItemGroup>

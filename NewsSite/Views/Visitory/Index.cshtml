@@ -1,0 +1,32 @@
+﻿@using DomainModel.Models
+@model List<Advertisement>
+@{
+    ViewData["Title"] = "Index";
+    
+}
+
+<h1>تبلیغات</h1>
+
+<table class="table table-bordered table-hover table-striped">
+    <thead>
+        <tr>
+            <th>عنوان</th>
+            <th>تصویر</th>
+            <th>فعال</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Title</td>
+                <td>
+                    <img src='@Url.Content(item.ImageUrl)' width="200" />
+                </td>
+                <td>
+                    <input type="checkbox" disabled="disabled" @(item.IsDefault ? "checked" : "") />
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

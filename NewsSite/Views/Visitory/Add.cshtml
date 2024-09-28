@@ -1,0 +1,83 @@
+﻿@using DomainModel.ViewModels.Advertisment
+@model AdvertismentAddEditViewModel
+@{
+    ViewData["Title"] = "Add";
+}
+
+<h1>Add Advertisement</h1>
+
+<div class="row">
+    <div class="col-md-4">
+        <form id="frmAddAdvertisement" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group">
+                <label asp-for="Title" class="control-label"></label>
+                <input asp-for="Title" class="form-control" id="Title" name="Title" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Picture" class="control-label">Upload Image</label>
+                <input asp-for="Picture" type="file" class="form-control-file" id="Picture" name="Picture" />
+                <span asp-validation-for="Picture" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="IsDefault" class="control-label"></label>
+                <input asp-for="IsDefault" type="checkbox" class="form-check-input" id="IsDefault" name="IsDefault" />
+                <span asp-validation-for="IsDefault" class="text-danger"></span>
+            </div>
+          <div class="form-group">
+                <label asp-for="Url" class="control-label"></label>
+                <input asp-for="Url" class="form-control" />
+                <span asp-validation-for="Url" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Alt" class="control-label"></label>
+                <input asp-for="Alt" class="form-control" />
+                <span asp-validation-for="Alt" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <button type="button" class="btn btn-success saveAdd" data-action="Add" data-controller="Visitory" data-form-id="frmAddAdvertisement">Add</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        $(document).on("click", ".saveAdd", function () {
+            let action = $(this).attr("data-action");
+            let controller = $(this).attr("data-controller");
+            let formId = "#" + $(this).attr("data-form-id");
+            let form = $(formId)[0]; // Get the raw form element
+
+            let formData = new FormData(form); // Use FormData for file upload
+
+            let sendingUrl = `/${controller}/${action}`;
+
+            $.ajax({
+                url: sendingUrl,
+                type: 'POST',
+                data: formData,
+                contentType: false, // Prevent jQuery from setting contentType
+                processData: false, // Prevent jQuery from processing the data
+                success: function (op) {
+                    if (op.success.toString() == "true") {
+                        $("#mainModal").modal("hide");
+                        BindGrid();
+                        SuccessMessage(op.message);
+                    } else {
+                        ErrorMessage(op.message);
+                    }
+                },
+                error: function () {
+                    ErrorMessage("خطا در ارسال اطلاعات");
+                }
+            });
+        });
+
+    </script>
+}
