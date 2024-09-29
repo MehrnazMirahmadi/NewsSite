@@ -1,0 +1,36 @@
+﻿@using DomainModel.Models
+@model List<Advertisement>
+
+<h1>تبلیغات</h1>
+<button type="button" class="btn btn-success" onclick="location.href='@Url.Action("Add", "Visitory")'">افزودن</button>
+<table class="table table-bordered table-hover table-striped">
+    <thead>
+        <tr>
+            <th>عنوان</th>
+            <th>تصویر</th>
+            <th>فعال</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Title</td>
+                <td>
+                    <img src='@Url.Content(item.ImageUrl)' width="200" />
+                </td>
+                <td>
+                    <input type="checkbox" disabled="disabled" @(item.IsDefault ? "checked" : "") />
+                </td>
+                <td>
+
+                    <a href="@Url.Action("Update", "Visitory", new { id = item.AdvertisementID })" class="btn btn-primary btn-sm">
+                        Update
+                    </a>
+
+
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

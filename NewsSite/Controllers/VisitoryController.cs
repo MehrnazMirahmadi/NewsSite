@@ -1,39 +1,39 @@
 ﻿using DataAccess.Services;
 using DomainModel.Models;
 using DomainModel.ViewModels.Advertisment;
-using Microsoft.AspNetCore.Mvc;
-using NewsSite.FrameworkUI.Services;
 using Framework.Implementations;
-using DomainModel.ViewModels;
-using DomainModel.ViewModels.News;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using NewsSite.ViewModel;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using System.Xml.Linq;
-using System.Xml;
-using DomainModel.Comon;
-using System.IO;
-using System.Threading.Tasks;
-using System.Linq;
+using Microsoft.AspNetCore.Mvc;
+using NewsSite.FrameworkUI;
+using NewsSite.FrameworkUI.Services;
+
 
 namespace NewsSite.Controllers
 {
     public class VisitoryController : Controller
     {
+        #region Ctor
         private readonly IAdvertiseVisitoryRepository _advertiseVisitoryRepository;
         private readonly IFileManager _fileManager;
+        private readonly IHostEnvironment env;
 
-        public VisitoryController(IAdvertiseVisitoryRepository advertiseVisitoryRepository, IFileManager fileManager)
+        public VisitoryController(IAdvertiseVisitoryRepository advertiseVisitoryRepository, IFileManager fileManager,IHostEnvironment hostEnvironment)
         {
             _advertiseVisitoryRepository = advertiseVisitoryRepository;
             _fileManager = fileManager;
+            env = hostEnvironment;
         }
 
+        #endregion
+
         #region Index
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(AdvertismentSearchModel sm)
         {
-            var result = await _advertiseVisitoryRepository.GetAll();
-            return View(result);
+            
+            return View(sm);
+        }
+        public async Task<IActionResult> AdvertismentList(AdvertismentSearchModel sm)
+        {
+            return ViewComponent("AdvertismentList", sm);
         }
         #endregion
 
@@ -54,15 +54,13 @@ namespace NewsSite.Controllers
 
                 return Json(new { success = false, message = "Invalid model data", errors = errors });
             }
-
-            // Validate the uploaded file
             if (advertisement.Picture == null || advertisement.Picture.Length == 0)
             {
                 return Json(new { success = false, message = "Please upload a valid image." });
             }
 
             string fileName = Path.GetFileName(advertisement.Picture.FileName);
-            var fileValidationResult = _fileManager.ValidateFileSize(advertisement.Picture, 2048, 2097152); // Min: 2KB, Max: 2MB
+            var fileValidationResult = _fileManager.ValidateFileSize(advertisement.Picture, 2048, 2097152);
 
             if (!_fileManager.ValidateFileName(fileName))
             {
@@ -112,5 +110,93 @@ namespace NewsSite.Controllers
         }
 
         #endregion
+        #region Update 
+        public async Task<IActionResult> Update(int ID)
+        {
+            var adv = await _advertiseVisitoryRepository.Get(ID);
+            if (adv == null)
+            {
+                return NotFound();
+            }
+            var viewModel = new AdvertismentAddEditViewModel
+            {
+                AdvertisementID = ID,
+                Title = adv.Title,
+                ImageUrl = adv.ImageUrl,
+                Url = adv.Url,
+                Alt = adv.Alt,
+                IsDefault = adv.IsDefault
+            };
+            return View(viewModel);
+        }
+   
+        [HttpPost]
+      
+        public async Task<IActionResult> Update(AdvertismentAddEditViewModel model)
+        {
+            var adv = await _advertiseVisitoryRepository.Get(model.AdvertisementID);
+            if (adv == null)
+            {
+                return NotFound();
+            }
+            adv.AdvertisementID = model.AdvertisementID;
+            adv.Title = model.Title; 
+            adv.Url = model.Url; 
+            adv.Alt = model.Alt; 
+            adv.IsDefault = model.IsDefault; 
+
+            if (model.Picture != null)
+            {
+                string fileName = Path.GetFileName(model.Picture.FileName);
+
+                var fileValidationResult = _fileManager.ValidateFileSize(model.Picture, 2048, 2097152); 
+                if (!fileValidationResult.Success)
+                {
+                    TempData["ErrorMessage"] = fileValidationResult.Message;
+                    return View(model);
+                }
+
+                if (!_fileManager.ValidateFileName(fileName)) 
+                {
+                    TempData["ErrorMessage"] = "Invalid file name.";
+                    return View(model);
+                }
+
+                if (!model.Picture.IsValidImageHeader()) 
+                {
+                    TempData["ErrorMessage"] = "Invalid image format.";
+                    return View(model);
+                }
+                if (!string.IsNullOrEmpty(adv.ImageUrl))
+                {
+                    var oldImagePath = Path.Combine(env.ContentRootPath, "wwwroot", adv.ImageUrl.TrimStart('/'));
+                    _fileManager.RemoveFile(oldImagePath);
+                }
+
+                var saveResult = _fileManager.SaveFile(model.Picture, "Visitory/img"); 
+                if (!saveResult.Success)
+                {
+                    TempData["ErrorMessage"] = "Failed to save image. " + saveResult.Message;
+                    return View(model);
+                }
+
+                adv.ImageUrl = _fileManager.ToRelativeAddress(saveResult.Message, "Visitory/img"); 
+            }
+
+            var op = await _advertiseVisitoryRepository.Update(adv); 
+            if (!op.Success)
+            {
+                TempData["ErrorMessage"] = op.Message;
+                return View(model);
+            }
+
+            TempData["SuccessMessage"] = "Advertisement updated successfully!";
+            return RedirectToAction("Index"); 
+        }
+
+
     }
+
+    #endregion
 }
+

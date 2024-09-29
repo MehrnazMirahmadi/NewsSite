@@ -68,5 +68,75 @@ namespace DataAccess.Repositories
             var adv = await db.Advertisement.OrderByDescending(x => x.AdvertisementID).ToListAsync();
             return adv;
         }
+
+        public async Task<List<Advertisement>> Search(AdvertismentSearchModel sm)
+        {
+            var query = db.Advertisement.AsQueryable();
+
+            if (!string.IsNullOrEmpty(sm.Title))
+            {
+                query = query.Where(x => x.Title.Contains(sm.Title));
+            }
+            if (sm.IsDefault)
+            {
+                query = query.Where(x => x.IsDefault == sm.IsDefault);
+            }
+
+            return await query.ToListAsync();
+        }
+
+        public Task<OperationResult> Delete(int ID)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<OperationResult> Update(AdvertismentAddEditViewModel adv)
+        {
+            OperationResult op = new OperationResult();
+            var existingAdv = await db.Advertisement.FirstOrDefaultAsync(x => x.AdvertisementID == adv.AdvertisementID);
+
+            if (existingAdv == null)
+            {
+                return op.ToFailed("تبلیغ وجود ندارد");
+            }
+            try
+            {
+                using (var transaction = await db.Database.BeginTransactionAsync())
+                {
+                    existingAdv.Title = adv.Title ?? existingAdv.Title; 
+                    existingAdv.ImageUrl = adv.ImageUrl ?? existingAdv.ImageUrl;
+                    existingAdv.Url = adv.Url ?? existingAdv.Url;
+                    existingAdv.Alt = adv.Alt ?? existingAdv.Alt;
+                    existingAdv.IsDefault = adv.IsDefault;
+                    db.Advertisement.Update(existingAdv);
+                    await db.SaveChangesAsync();
+                    await transaction.CommitAsync();
+                }
+
+                return op.ToSuccess("Advertisement updated successfully");
+            }
+            catch (Exception ex)
+            {
+
+                return op.ToFailed("Update failed: " + ex.Message);
+            }
+        }
+        public async Task<AdvertismentAddEditViewModel> Get(int ID)
+        {
+            var adv = await db.Advertisement.FirstOrDefaultAsync(x => x.AdvertisementID == ID);
+            if (adv == null)
+            {
+                return null;
+            }
+            return new AdvertismentAddEditViewModel
+            {
+                Title = adv.Title,
+                ImageUrl = adv.ImageUrl,
+                Url = adv.Url,
+                Alt = adv.Alt,
+                IsDefault = adv.IsDefault
+            };
+        }
+
     }
 }

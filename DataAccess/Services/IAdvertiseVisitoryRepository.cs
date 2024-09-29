@@ -1,11 +1,7 @@
 ﻿using DomainModel.Comon;
 using DomainModel.Models;
 using DomainModel.ViewModels.Advertisment;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace DataAccess.Services
 {
@@ -14,6 +10,9 @@ namespace DataAccess.Services
         Task<Advertisement> GetActiveAdvertise();
         Task<List<Advertisement>> GetAll();
         Task<OperationResult> Add(AdvertismentAddEditViewModel advertisement);
-
+        Task<List<Advertisement>> Search(AdvertismentSearchModel sm);
+        Task<OperationResult> Delete(int ID);
+        Task<OperationResult> Update(AdvertismentAddEditViewModel adv);
+        Task<AdvertismentAddEditViewModel> Get(int ID);
     }
 }
