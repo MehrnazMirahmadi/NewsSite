@@ -12,13 +12,13 @@
                     <div class="style-text mt-3">
                         <div class="row">
                             <div class="col-md-6 col-5">
-                                <a href="@Url.Action("Details", "News", new { id = newsItem.NewsID })" class="img-top-news-2">
+                            <a href="@Url.Action("NewsDetail", "News", new { id = newsItem.NewsID })" class="img-top-news-2">
                                     <img src="@Url.Content(newsItem.ImageUrl)" class="img-fluid" alt="@newsItem.NewsTitle">
                                 </a>
                             </div>
                             <div class="col-md-6 col-7 py-2">
                                 <p class="font_13 text-p line-height-text">@Html.DisplayFor(m => newsItem.CategoryName)</p>
-                                <a href="@Url.Action("Details", "News", new { id = newsItem.NewsID })" class="text-p">
+                            <a href="@Url.Action("NewsDetail", "News", new { id = newsItem.NewsID })" class="text-p">
                                     <div class="circle-title"></div>
                                     <p class="font_13 style-tittle line-height-text">
                                         @Html.DisplayFor(m => newsItem.NewsTitle)

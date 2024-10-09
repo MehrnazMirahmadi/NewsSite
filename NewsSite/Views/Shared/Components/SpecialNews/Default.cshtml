@@ -7,10 +7,10 @@
         {
             var newsItem = Model[i];
             <div class="carousel-item @(i == 0 ? "active" : "")">
-         @*        <div class="col-md-6 col-12"> *@
+ 
                     <div class="img-relative img-hover">
                         <a href="show-news.html" class="img-top-news-1">
-                            @* <img style="width:100px ; height:100px;" src="@newsItem.ImageUrl" class="img-fluid" alt="@newsItem.NewsTitle"> *@
+                  
                             <img  src="@Url.Content(newsItem.ImageUrl)" class="img-fluid" alt="@newsItem.NewsTitle">
 
                             <div class="text-box-top-news-1">
@@ -21,7 +21,6 @@
                             </div>
                         </a>
                     </div>
-               @*  </div> *@
             </div>
         }
     </div>

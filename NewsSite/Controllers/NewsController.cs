@@ -310,7 +310,31 @@ namespace NewsSite.Controllers
         }
 
         #endregion
+        #region DetailNews
+        [Route("News/NewsDetail/{NewsID}")]
+        public async Task<IActionResult> NewsDetail(int NewsID)
+        {
+            var n = await newsRepo.Get(NewsID);
+            var news = new ViewModel.NewsDetailsModel
+            {
+                NewsID = NewsID,
+                NewsCategoryID = n.NewsCategoryID,
+                NewsTitle = n.NewsTitle,
+                NewsText = n.NewsText,
+                ImageUrl = n.ImageUrl,
+                RegistrationDate = n.RegistrationDate,
+                Slug = n.Slug,
+                SmallDescription = n.SmallDescription,
+                SortOrder = n.SortOrder,
+                VisitCount = n.VisitCount,
+                VoteCount = n.VoteCount,
+                VoteSumation = n.VoteSumation
 
+            };
+            await InflateCategories();
+            return View(news);
+        }
+        #endregion
         #region DeleteImage
         [HttpPost]
         public async Task<IActionResult> DeleteImage(int NewsID)

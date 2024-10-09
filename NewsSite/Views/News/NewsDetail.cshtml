@@ -1,0 +1,169 @@
+﻿@using NewsSite.ViewModel
+@model NewsDetailsModel
+@{
+    ViewData["Title"] = "جزئیات خبر";
+    Layout = "~/Views/Shared/VisitoryLayout.cshtml";
+    SelectList cat = (SelectList)@ViewBag.Categories;
+}
+
+
+<div class="bg-content-show-news">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-9 col-12">
+                    <div class="mt-3">
+                        <p class="font_16" style="font-weight: bold">@Model.NewsTitle</p>
+                    </div>
+
+
+                    <a href="show_news.html">
+                    <img src="@Url.Content(Model.ImageUrl)" class=" new-content new-content-res " />
+                     
+                    </a>
+
+
+                    <div class="text-p-line-left">
+
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="bg-white-show mt-3 mt-md-0">
+
+                                    <span class="font_12" style="color: #000">
+        @Model.SmallDescription
+                                    </span>
+
+
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                        <p class="font_15 mt-4">
+                     @Model.NewsText
+                        </p>
+                     
+                        <p class="font_15 mt-4">انتهای پیام</p>
+                    </div>
+
+                    <div class="clearfix"></div>
+
+                    <div class="text-center">
+                        <a href="#">
+                            <img src="img/4070_785.jpg" class="img-fluid">
+                        </a>
+                    </div>
+
+                    <div class="mt-2">
+                        <div class="bg-color-box">
+                            <div class="row">
+                                <div class="col-6">
+                                    <span class="float-right">
+                                        <i class="fa fa-link"></i>
+                                        <span class="mr-2">
+                                            https://www.yjc.news/00YkQR
+                                        </span>
+                                    </span>
+                                </div>
+                                <div class="col-6">
+                                    <span class="float-left">
+                                            <div class="style-li">
+                                                <ul class="style-ul mb-0 ">
+                                                    <li>
+                                                        <a href="#" class="">
+                                                            <i class="fab fa-twitter color-media"></i>
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="#" class="">
+                                                            <i class="fab fa-instagram color-media"></i>
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="#" class="">
+                                                            <i class="fab fa-telegram color-media"></i>
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="#" class="">
+                                                            <i class="fab fa-android color-media"></i>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12">
+                        <span>
+                            <ul class="style-ul style-li p-0">
+                                <span class="style-tag">
+                                    برچسب ها :
+                                </span>
+                               
+                                    <li>
+                                        <a href="#" style="color: #000;" class="mr-2">
+                                            Model.slug
+                                        </a>
+                                    </li>
+                               
+                            </ul>
+                        </span>
+
+                        </div>
+                    </div>
+
+                    <section>
+                        <div class="mt-5">
+                            <div class="circle-title"></div>
+                            <span class="sab-news">اخبار مرتبط</span>
+                        </div>
+                        <div class="mt-2">
+                            <div class="row">
+                                <div class="col-lg-3 col-md-4 col-12">
+                                    <div class="border-sab-news">
+                                        <p>وزیر اقتصاد مطرح کرد:</p>
+                                        <a href="show-news.html">
+                                            <div class="circle-titr"></div>
+                                            <span class="font_15 style-text-sab-news">
+                     									چک الکترونیک هزینه مبادلات را کاهش می‌دهد
+                                            </span>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-md-4 col-12">
+                                    <div class="border-sab-news">
+                                        <p>وزیر اقتصاد مطرح کرد:</p>
+                                        <a href="show-news.html">
+                                            <div class="circle-titr"></div>
+                                            <span class="font_15 style-text-sab-news">
+                     									چک الکترونیکی در کدام بانک ها اجرایی می شود؟
+                                            </span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+        
+                </div>
+
+
+                <div class="col-lg-3 d-lg-inline-block d-none">
+
+       
+
+
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
