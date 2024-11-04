@@ -1,0 +1,23 @@
+﻿@model NewSite.ViewModel.Security.RoleAddEditModel
+
+@{
+    ViewData["Title"] = "Delete Role";
+}
+
+<h2>Delete Role</h2>
+
+<div>
+    <h4>Are you sure you want to delete this role?</h4>
+    <div>
+        <strong>Role Name:</strong> @Model.RoleName
+    </div>
+    <div>
+        <strong>Description:</strong> @Model.Description
+    </div>
+
+    <form asp-action="DeleteConfirmed" method="post">
+        <input type="hidden" asp-for="RoleID" />
+        <button type="submit" class="btn btn-danger">Delete</button>
+        <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>

@@ -34,11 +34,15 @@
                 @Html.DisplayFor(modelItem => item.Description)
             </td>
             
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                
+              <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                @Html.ActionLink("Details", "Edit", new { id = item.Id })
+                |
+                 <form asp-action="Delete" asp-route-id="@item.Id" method="post" style="display:inline;">
+            <button type="submit" class="btn btn-link" onclick="return confirm('Are you sure you want to delete this item?');">Delete</button>
+        </form>
             </td>
+
         </tr>
 }
     
