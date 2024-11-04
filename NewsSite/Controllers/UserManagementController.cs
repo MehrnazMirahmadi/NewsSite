@@ -31,9 +31,9 @@ namespace NewSite.Controllers
         {
             var q = from u in db.Users
                     join ur in db.UserRoles
- on u.Id equals ur.UserId
+                       on u.Id equals ur.UserId
                     join r in db.Roles
-on ur.RoleId equals r.Id
+                       on ur.RoleId equals r.Id
                     select new UserListItem
                     {
                         RoleName = r.Name
@@ -82,7 +82,7 @@ on ur.RoleId equals r.Id
                 ,
                 UserName = uservm.Email
             };
-           
+
 
             IdentityResult userRegistrationResult = await userManager.CreateAsync(user, uservm.Password);
             IdentityResult makeUserMemberofRoleResult = null;
@@ -198,7 +198,7 @@ on ur.RoleId equals r.Id
             }
             oldApplicationUser.FirstName = newUserAddeditModel.FirstName;
             oldApplicationUser.LastName = newUserAddeditModel.LastName;
-            await userManager.CheckPasswordAsync(oldApplicationUser, newUserAddeditModel.Password); 
+            await userManager.CheckPasswordAsync(oldApplicationUser, newUserAddeditModel.Password);
 
             IdentityResult result = await userManager.UpdateAsync(oldApplicationUser);
             if (result.Succeeded)

@@ -1,4 +1,4 @@
-using DataAccess.Repositories;
+﻿using DataAccess.Repositories;
 using DataAccess.Services;
 using DomainModel.Models;
 using Microsoft.AspNetCore.Identity;
@@ -41,10 +41,14 @@ builder.Services.AddIdentity<Security.ApplicationUser, Security.ApplicationRole>
 // Configure Authentication cookie for Forms Authentication
 builder.Services.ConfigureApplicationCookie(options =>
 {
-    options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
-    options.Cookie.Name = ".MyAuthCookie";
-    options.SlidingExpiration = true;
-    options.LoginPath = "/Account/Login";
+   
+    options.Cookie.Name = ".MyAuthCookie";// نام کوکی
+    options.Cookie.HttpOnly = true; // کوکی فقط برای HTTP است
+    options.ExpireTimeSpan = TimeSpan.FromMinutes(30); // مدت زمان انقضا
+    options.SlidingExpiration = true; // تمدید زمان انقضا به صورت خودکار
+    options.LoginPath = "/Account/Login"; // مسیر صفحه ورود
+    options.LogoutPath = "/Account/Logout"; // مسیر صفحه خروج
+    options.AccessDeniedPath = "/Account/AccessDenied"; // مسیر دسترسی ممنوع
 });
 #endregion
 
